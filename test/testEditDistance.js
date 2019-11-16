@@ -1,5 +1,5 @@
 const describe = require('mocha').describe;
-const editDistance = require('../algos/editDistance');
+const editDistance = require('../algos/Levenshtein-memoize');
 const chai = require('chai');
 const assert = chai.assert;
 const expect = chai.expect;

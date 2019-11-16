@@ -1,5 +1,8 @@
+/**
+ * Levenshtein distance using recursion/memoizing
+ */
 
-function editDistance(a, b) {
+function levenshteinMemoize(a, b) {
     return editDistanceMemo(a,b);
 }
 
@@ -22,8 +25,8 @@ function editDistanceImpl(a, b) {
     const bhead = b.charAt(0);
     const btail = b.substring(1);
 
-    if (ahead === bhead) return editDistance(atail, btail);
+    if (ahead === bhead) return levenshteinMemoize(atail, btail);
     else return 1 + Math.min(editDistanceMemo(a, btail), editDistanceMemo(atail, b), editDistanceMemo(atail, btail));
 }
 
-module.exports = editDistance;
+module.exports = levenshteinMemoize;
