@@ -36,7 +36,7 @@ function fun() {
         };
     }
 
-    function reconstructPath(state: any) {
+    function reconstructPath(state: StateEntry[][]) {
         let path = '';
         let i = state.length - 1;
         let j = state[0].length - 1;
@@ -57,9 +57,9 @@ function fun() {
         return path;
     }
 
-    function newStep(dist: number, step: string) { return { distance: dist, step: step}; }
+    function newStep(dist: number, step: string): StateEntry { return { distance: dist, step: step}; }
 
-    function init(a: string, b: string) {
+    function init(a: string, b: string): StateEntry[][] {
         const state = Array(a.length + 1);
         for (let i = 0; i < state.length; ++i)
             state[i] = Array(b.length + 1);
@@ -75,6 +75,11 @@ function fun() {
         return state;
     }
     return levenshteinIterative;
+
+    interface StateEntry {
+        distance: number;
+        step: string;
+    }
 }
 
 module.exports = fun();

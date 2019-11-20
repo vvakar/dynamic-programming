@@ -24,7 +24,7 @@ function funMemo() {
         return  { distance: d.distance, path: path };
     }
 
-    function dist(step:string, distance:number) {
+    function dist(step:string, distance:number): StateEntry {
         return { step: step, distance: distance };
     }
 
@@ -75,6 +75,11 @@ function funMemo() {
             case 'B': return dist.step + reconstructPath(a.substr(1), b);
             default: return dist.step;
         }
+    }
+
+    interface StateEntry {
+        distance: number;
+        step: string;
     }
 
     return levenshteinMemoize;
