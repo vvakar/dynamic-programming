@@ -12,35 +12,47 @@ for (let func of [editDistanceMemo, editDistanceIter]) {
     describe(`${func.name} edit distance`, function () {
         it('handles edge cases', function (done) {
             expect(func('', '').distance).to.eql(0);
-            // expect(func('', '').path).to.eql('');
+            expect(func('', '').path).to.eql('');
             expect(func('abc', '').distance).to.eql(3);
-            // expect(func('abc', '').path).to.eql('BBB');
+            expect(func('abc', '').path).to.eql('BBB');
             expect(func('', 'abc').distance).to.eql(3);
-            // expect(func('', 'abc').path).to.eql('AAA');
+            expect(func('', 'abc').path).to.eql('AAA');
             done();
         });
 
         it('handles short words', function (done) {
             expect(func('hello', 'hello').distance).to.eql(0);
-            // expect(func('hello', 'hello').path).to.eql('EEEEE');
+            expect(func('hello', 'hello').path).to.eql('EEEEE');
             expect(func('hello', 'hello1').distance).to.eql(1);
-            // expect(func('hello', 'hello1').path).to.eql('EEEEEA');
+            expect(func('hello', 'hello1').path).to.eql('EEEEEA');
             expect(func('hello1', 'hello').distance).to.eql(1);
-            // expect(func('hello1', 'hello').path).to.eql('EEEEEB');
+            expect(func('hello1', 'hello').path).to.eql('EEEEEB');
             expect(func('1hello1', 'hello').distance).to.eql(2);
-            // expect(func('1hello1', 'hello').path).to.eql('BEEEEEB');
+            expect(func('1hello1', 'hello').path).to.eql('BEEEEEB');
 
             expect(func('hello', '1hello1').distance).to.eql(2);
-            // expect(func('hello', '1hello1').path).to.eql('AEEEEEA');
+            expect(func('hello', '1hello1').path).to.eql('AEEEEEA');
             expect(func('1hello', 'hello').distance).to.eql(1);
-            // expect(func('1hello', 'hello').path).to.eql('BEEEEE');
+            expect(func('1hello', 'hello').path).to.eql('BEEEEE');
             done();
         });
 
         it('handles more complex cases', function (done) {
             expect(func('distnace', 'distance').distance).to.eql(2);
+            expect(func('distnace', 'distance').path).to.eql('EEEEXXEE');
+
+            expect(func('diis', 'dis').distance).to.eql(1);
             expect(func('diistance', 'distance').distance).to.eql(1);
+
             expect(func('dstance', 'distance').distance).to.eql(1);
+            expect(func('dstance', 'distance').path).to.eql('EAEEEEEE');
+            done();
+        });
+
+        it('favors E/X over A over B', function(done) {
+            // TODO: Controlling the exact choice of diffs require being pickier about which min value to choose
+            // expect(func('dii', 'di').path).to.eql('EEB');
+            // expect(func('diistance', 'distance').path).to.eql('EEBEEEEEE');
             done();
         });
 
