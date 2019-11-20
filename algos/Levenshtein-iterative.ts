@@ -3,7 +3,7 @@
  *
  */
 function fun() {
-    function levenshteinIterative(a, b) {
+    function levenshteinIterative(a: string, b: string) {
         const state = init(a,b);
 
         for (let j = 1; j < state[0].length; ++j) {
@@ -36,7 +36,7 @@ function fun() {
         };
     }
 
-    function reconstructPath(state) {
+    function reconstructPath(state: any) {
         let path = '';
         let i = state.length - 1;
         let j = state[0].length - 1;
@@ -57,9 +57,9 @@ function fun() {
         return path;
     }
 
-    function newStep(dist, step) { return { distance: dist, step: step}; }
+    function newStep(dist: number, step: string) { return { distance: dist, step: step}; }
 
-    function init(a, b) {
+    function init(a: string, b: string) {
         const state = Array(a.length + 1);
         for (let i = 0; i < state.length; ++i)
             state[i] = Array(b.length + 1);

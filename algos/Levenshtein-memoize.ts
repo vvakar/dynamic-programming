@@ -12,10 +12,10 @@
  *  X - a and b different, remove both
  *
  */
-function fun() {
-    let memo;
+function funMemo() {
+    let memo: any;
 
-    function levenshteinMemoize(a, b) {
+    function levenshteinMemoize(a: string, b: string) {
         memo = {};
         memo[key('', '')] = dist('', 0);
 
@@ -24,15 +24,15 @@ function fun() {
         return  { distance: d.distance, path: path };
     }
 
-    function dist(step, distance) {
+    function dist(step:string, distance:number) {
         return { step: step, distance: distance };
     }
 
-    function key(a, b) {
+    function key(a:string, b:string) {
         return a.length + '--' + b.length;
     }
 
-    function editDistanceMemo(a, b) {
+    function editDistanceMemo(a: string, b: string) {
         const prop = key(a,b);
         if (memo[prop]) return memo[prop];
 
@@ -64,7 +64,7 @@ function fun() {
         return memo[prop] = res;
     }
 
-    function reconstructPath(a, b) {
+    function reconstructPath(a: string, b: string): any {
         const k = key(a,b);
         const dist = memo[k];
 
@@ -80,4 +80,4 @@ function fun() {
     return levenshteinMemoize;
 }
 
-module.exports = fun();
+module.exports = funMemo();
