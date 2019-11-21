@@ -78,8 +78,8 @@ function funMemo() {
     }
 
     interface StateEntry {
-        distance: number;
-        step: string;
+        readonly distance: number;
+        readonly step: string;
     }
 
     return levenshteinMemoize;

@@ -50,9 +50,8 @@ for (let func of [editDistanceMemo, editDistanceIter]) {
         });
 
         it('favors E/X over A over B', function(done) {
-            // TODO: Controlling the exact choice of diffs require being pickier about which min value to choose
-            // expect(func('dii', 'di').path).to.eql('EEB');
-            // expect(func('diistance', 'distance').path).to.eql('EEBEEEEEE');
+            expect(func('dii', 'di').path).to.eql('EEB');
+            expect(func('diistance', 'distance').path).to.eql('EEBEEEEEE');
             done();
         });
 

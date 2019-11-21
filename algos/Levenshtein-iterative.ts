@@ -17,26 +17,26 @@ function fun() {
                 const bChanged = state[i-1][j];
                 const aChanged = state[i][j-1];
 
-                if (both.distance + bothPenalty <= bChanged.distance + 1 && both.distance + bothPenalty <= aChanged.distance + 1) {
-                    // Keeping or dropping both letters and taking penalty if needed
-                    state[i][j] = newStep(both.distance + bothPenalty, bothPenalty ? 'X':'E');
-                } else if (aChanged.distance <= bChanged.distance) {
-                    // dropping a and taking penalty of 1
-                    state[i][j] = newStep(aChanged.distance + 1, 'A');
-                } else {
-                    // dropping b and taking penalty of 1
-                    state[i][j] = newStep(bChanged.distance + 1, 'B');
-                }
+                const candidates = [
+                    newStepCandidate(both.distance + bothPenalty, bothPenalty ? 'X':'E', both.step, true),
+                    newStepCandidate(aChanged.distance + 1, 'A', aChanged.step, false),
+                    newStepCandidate(bChanged.distance + 1, 'B', bChanged.step, false)
+                ];
+
+                const winner = candidates.sort(sortFun)[0];
+                state[i][j] = newStep(winner.newDistance, winner.nextStep);
             }
         }
 
         return  {
             distance: state[state.length - 1][state[0].length - 1].distance,
-            path: reconstructPath(state)
+            path: reconstructPath(state, a, b)
         };
     }
 
-    function reconstructPath(state: StateEntry[][]) {
+    function reconstructPath(state: StateEntry[][], a:string, b:string) {
+        // printState(state, a, b);
+
         let path = '';
         let i = state.length - 1;
         let j = state[0].length - 1;
@@ -58,6 +58,7 @@ function fun() {
     }
 
     function newStep(dist: number, step: string): StateEntry { return { distance: dist, step: step}; }
+    function newStepCandidate(dist: number, step: string, prevStep: string, isBoth: boolean): StateEntryCandidate { return { newDistance: dist, nextStep: step, lastStep: prevStep, isBoth: isBoth}; }
 
     function init(a: string, b: string): StateEntry[][] {
         const state = Array(a.length + 1);
@@ -76,9 +77,63 @@ function fun() {
     }
     return levenshteinIterative;
 
+    function sortFun(a: StateEntryCandidate, b: StateEntryCandidate) {
+        let comp = a.newDistance < b.newDistance ? -1 : a.newDistance === b.newDistance ? 0 : 1;
+        if (comp === 0) {
+            if ((a.lastStep === 'E' || a.lastStep ==='X') && a.isBoth) comp = -1; // Shortest path with E/X wins
+            if ((b.lastStep === 'E' || b.lastStep ==='X') && b.isBoth) comp = 1;
+
+            else if (a.lastStep === 'E') comp = -1; // E wins otherwise
+            else if (b.lastStep === 'E') comp = 1;
+            else if (a.lastStep === 'X') comp = -1; // X wins over B
+            else if (b.lastStep === 'X') comp = 1;
+
+            else if (a.lastStep === 'A') comp = 1; // A always loses
+            else if (b.lastStep === 'A') comp = -1;
+
+            else if (a.nextStep === 'E') comp = -1; // E always wins
+            else if (b.nextStep === 'E') comp = 1;
+            else if (a.nextStep === 'X') comp = -1; // X wins over B
+            else if (b.nextStep === 'X') comp = 1;
+            else if (a.nextStep === 'A') comp = 1; // A always loses
+            else if (b.nextStep === 'A') comp = -1;
+            else comp = -1; // default fallback
+        }
+
+        return comp;
+    }
+
+    function printState(state: StateEntry[][], a:string, b:string) {
+        process.stdout.write(`\n\n           `);
+        for (let j = 0; j < state[0].length; ++j)
+            process.stdout.write(`  ${b.charAt(j)}    `);
+
+        for (let i = 0; i < state.length; ++i) {
+            if (i > 0)
+                process.stdout.write(`\n ${a.charAt(i-1)} `);
+            else
+                process.stdout.write(`\n   `);
+
+
+            for (let j = 0; j < state[0].length; ++j) {
+                const s = state[i][j];
+                if (s) {
+                    process.stdout.write(` {${s.distance},${s.step || ' '}} `);
+                }
+            }
+        }
+    }
+
     interface StateEntry {
-        distance: number;
-        step: string;
+        readonly distance: number;
+        readonly step: string;
+    }
+
+    interface StateEntryCandidate {
+        readonly newDistance: number;
+        readonly lastStep: string;
+        readonly nextStep: string;
+        readonly isBoth: boolean;
     }
 }
 
