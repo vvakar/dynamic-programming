@@ -14,7 +14,7 @@
  */
 let memo: any;
 
-export function levenshteinMemoize(a: string, b: string) {
+export default function levenshteinMemoize(a: string, b: string) {
     memo = {};
     memo[key('', '')] = dist('', 0);
 
@@ -24,7 +24,7 @@ export function levenshteinMemoize(a: string, b: string) {
 }
 
 function dist(step: string, value: number): StateEntry {
-    return {step: step, value: value};
+    return {direction: step, value: value};
 }
 
 function key(a: string, b: string) {
@@ -67,22 +67,22 @@ function reconstructPath(a: string, b: string): any {
     const k = key(a, b);
     const dist = memo[k];
 
-    switch (dist.step) {
+    switch (dist.direction) {
         case 'E':
         case 'X':
-            return dist.step + reconstructPath(a.substr(1), b.substr(1));
+            return dist.direction + reconstructPath(a.substr(1), b.substr(1));
         case 'A':
-            return dist.step + reconstructPath(a, b.substr(1));
+            return dist.direction + reconstructPath(a, b.substr(1));
         case 'B':
-            return dist.step + reconstructPath(a.substr(1), b);
+            return dist.direction + reconstructPath(a.substr(1), b);
         default:
-            return dist.step;
+            return dist.direction;
     }
 }
 
 interface StateEntry {
     readonly value: number;
-    readonly step: string;
+    readonly direction: string;
 }
 
 

@@ -2,10 +2,16 @@
  * Levenshtein distance using tabulation/iteration, also known as bottom-up solution.
  *
  */
-import {StateEntry, initState, newStep, newStepCandidate, sortFun, printState} from './util/iterativeUtil';
+import {
+    initState,
+    newStep,
+    newStepCandidate,
+    sortFun,
+    reconstructPath
+} from './util/iterativeUtil';
 
-export function levenshteinIterative(a: string, b: string) {
-    const state = initState(a, b, x => x);
+export default function levenshteinIterative(a: string, b: string) {
+    const state = initState(a, b, x => x, s => s);
 
     for (let j = 1; j < state[0].length; ++j) {
         for (let i = 1; i < state.length; ++i) {
@@ -19,13 +25,13 @@ export function levenshteinIterative(a: string, b: string) {
             const aChanged = state[i][j - 1];
 
             const candidates = [
-                newStepCandidate(both.value + bothPenalty, bothPenalty ? 'X' : 'E', both.step, true),
-                newStepCandidate(aChanged.value + 1, 'A', aChanged.step, false),
-                newStepCandidate(bChanged.value + 1, 'B', bChanged.step, false)
+                newStepCandidate(both.value + bothPenalty, bothPenalty ? 'X' : 'E', both.direction, true),
+                newStepCandidate(aChanged.value + 1, 'A', aChanged.direction, false),
+                newStepCandidate(bChanged.value + 1, 'B', bChanged.direction, false)
             ];
 
             const winner = candidates.sort(sortFun)[0];
-            state[i][j] = newStep(winner.newValue, winner.nextStep);
+            state[i][j] = newStep(winner);
         }
     }
 
@@ -35,33 +41,4 @@ export function levenshteinIterative(a: string, b: string) {
     };
 }
 
-function reconstructPath(state: StateEntry[][], a: string, b: string) {
-    // printState(state, a, b);
-
-    let path = '';
-    let i = state.length - 1;
-    let j = state[0].length - 1;
-
-    do {
-        const s = state[i][j];
-        path = s.step + path;
-
-        switch (s.step) {
-            case 'B':
-                --i;
-                break;
-            case 'A':
-                --j;
-                break;
-            case 'X':
-            case 'E':
-                --i;
-                --j;
-                break;
-        }
-
-    } while (i > 0 || j > 0);
-
-    return path;
-}
 

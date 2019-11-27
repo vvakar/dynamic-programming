@@ -1,8 +1,17 @@
-import {StateEntry, initState, newStep, newStepCandidate, printState, sortFun} from './util/iterativeUtil';
+/**
+ * Iterative DP implementation of Lowest Common Subsequence.
+ */
 
-export function LCS(as: string, bs: string): number {
-    const state = initState(as, bs, () => 0);
-    let max = 0;
+import {
+    initState,
+    newStep,
+    newStepCandidateWithStep,
+    reconstructPath,
+    sortFun
+} from './util/iterativeUtil';
+
+export default function LCS(as: string, bs: string) {
+    const state = initState(as, bs, () => 0, () => '');
 
     for (let j = 1; j <= bs.length; ++j)
         for (let i = 1; i <= as.length; ++i) {
@@ -15,17 +24,17 @@ export function LCS(as: string, bs: string): number {
             const bAdvanced = state[i - 1][j];
 
             const candidates = [
-                newStepCandidate(both.value + bothBonus, 'E', both.step, true),
-                newStepCandidate(aAdvanced.value, 'A', aAdvanced.step, false),
-                newStepCandidate(bAdvanced.value, 'B', bAdvanced.step, false)
+                newStepCandidateWithStep(both.value + bothBonus, 'E', a, both.direction, true),
+                newStepCandidateWithStep(aAdvanced.value, 'A','', aAdvanced.direction,  false),
+                newStepCandidateWithStep(bAdvanced.value, 'B', '', bAdvanced.direction,  false)
             ];
 
             const winner = candidates.sort(sortFun)[candidates.length - 1];
-            state[i][j] = newStep(winner.newValue, winner.nextStep);
-            max = Math.max(max, state[i][j].value);
-
+            state[i][j] = newStep(winner);
         }
 
-    // printState(state, as, bs);
-    return max;
+    return {
+        value: state[state.length - 1][state[0].length - 1].value,
+        path: reconstructPath(state, as, bs)
+    };
 }

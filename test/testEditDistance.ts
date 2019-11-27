@@ -1,6 +1,6 @@
 import {describe} from 'mocha';
-import { levenshteinMemoize } from '../algos/Levenshtein-memoize';
-import { levenshteinIterative} from "../algos/Levenshtein-iterative";
+import  levenshteinMemoize from '../algos/Levenshtein-memoize';
+import levenshteinIterative from "../algos/Levenshtein-iterative";
 import { expect } from 'chai';
 
 
