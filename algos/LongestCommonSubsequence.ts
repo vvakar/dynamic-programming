@@ -1,5 +1,5 @@
 /**
- * Iterative DP implementation of Lowest Common Subsequence.
+ * Iterative DP implementation of Longest Common Subsequence.
  */
 
 import {

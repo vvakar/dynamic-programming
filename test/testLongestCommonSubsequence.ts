@@ -1,4 +1,4 @@
-import  LCS from '../algos/LowestCommonSubsequence';
+import  LCS from '../algos/LongestCommonSubsequence';
 import {describe} from 'mocha';
 import {expect} from 'chai';
 
